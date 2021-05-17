@@ -1,0 +1,22 @@
+[package]
+name = "async-graphql-relay"
+description = "Relay support for async-graphql"
+version = "0.1.0"
+authors = ["Oscar Beaumont <oscar@otbeaumont.me>"]
+edition = "2018"
+license = "MIT"
+
+homepage = "https://github.com/oscartbeaumont/async-graphql-relay"
+documentation = "https://docs.rs/async-graphql-relay"
+repository = "https://github.com/oscartbeaumont/async-graphql-relay"
+readme = "README.md"
+
+keywords = ["futures", "async", "graphql"]
+categories = ["network-programming", "asynchronous"]
+
+[lib]
+proc-macro = true
+
+[dependencies]
+syn = "1.0.72"
+quote = "1.0.9"

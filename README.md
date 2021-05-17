@@ -1,2 +1,3 @@
-# async-graphql-relay
-Relay support for async-graphql
+# Async GraphQL Relay
+
+Relay support for async-graphql.
