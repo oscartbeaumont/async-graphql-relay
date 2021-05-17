@@ -1,21 +1,20 @@
-use crate::Node;
-use crate::SchemaNodeTypes;
+use crate::{Node, SchemaNodeTypes, ID};
 use async_graphql::{ComplexObject, SimpleObject};
-use async_graphql_relay::RelayGlobalID;
 
-#[derive(SimpleObject, RelayGlobalID)]
+#[derive(SimpleObject)]
 #[graphql(complex)]
 pub struct User {
-    #[graphql(skip)]
-    pub id: String,
+    pub id: ID,
     pub name: String,
     pub role: String,
 }
 
 impl User {
     pub async fn get(id: String) -> Node {
+        println!("Getting User: {}", id);
+
         User {
-            id: id,
+            id: ID(id, SchemaNodeTypes::User),
             name: "Oscar".to_string(),
             role: "Testing123".to_string(),
         }
@@ -25,10 +24,6 @@ impl User {
 
 #[ComplexObject]
 impl User {
-    pub async fn id(&self) -> String {
-        self.relay_id()
-    }
-
     pub async fn test(&self) -> String {
         "testing".to_string()
     }

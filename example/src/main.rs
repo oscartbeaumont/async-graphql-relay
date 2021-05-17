@@ -2,14 +2,21 @@ use crate::tenant::Tenant;
 use crate::user::User;
 use actix_web::{http::StatusCode, web, App, HttpResponse, HttpServer, Responder};
 use async_graphql::http::{playground_source, GraphQLPlaygroundConfig};
-use async_graphql::{EmptyMutation, EmptySubscription, Interface, Object, Response};
+use async_graphql::{
+    EmptyMutation, EmptySubscription, InputValueResult, Interface, Object, Response, Scalar,
+    ScalarType, Value,
+};
 use async_graphql_actix_web::Request;
-use async_graphql_relay::RelayNodeEnum;
+use async_graphql_relay::{RelayGlobalID, RelayNodeEnum};
+use std::fmt;
 
 mod tenant;
 mod user;
 
 pub struct QueryRoot;
+
+#[derive(RelayGlobalID)]
+pub struct ID(pub String, pub SchemaNodeTypes);
 
 #[derive(Interface, RelayNodeEnum)]
 #[graphql(field(name = "id", type = "String"))]
@@ -22,7 +29,10 @@ pub enum Node {
 impl QueryRoot {
     async fn user(&self) -> User {
         User {
-            id: "92ba0c2d-4b4e-4e29-91dd-8f96a078c3f8".to_string(),
+            id: ID(
+                "92ba0c2d-4b4e-4e29-91dd-8f96a078c3ff".to_string(),
+                SchemaNodeTypes::User,
+            ),
             name: "Oscar".to_string(),
             role: "Testing123".to_string(),
         }
@@ -30,7 +40,10 @@ impl QueryRoot {
 
     async fn tenant(&self) -> Tenant {
         Tenant {
-            id: "14b4a5db-b8f0-4bf9-881e-37a9e0d0ae33".to_string(),
+            id: ID(
+                "14b4a5db-b8f0-4bf9-881e-37a9e0d0ae3h".to_string(),
+                SchemaNodeTypes::Tenant,
+            ),
             name: "My Company".to_string(),
             description: "Testing123".to_string(),
         }
