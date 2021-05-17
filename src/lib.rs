@@ -25,13 +25,13 @@ pub fn derive_relay_global_id(input: TokenStream) -> TokenStream {
                 format!("{}{}", uuid, node_type)
             }
         }
-        #[Scalar]
-        impl ScalarType for #name {
-            fn parse(_value: Value) -> InputValueResult<Self> {
+        #[async_graphql::Scalar]
+        impl async_graphql::ScalarType for #name {
+            fn parse(_value: async_graphql::Value) -> async_graphql::InputValueResult<Self> {
                 unimplemented!();
             }
-            fn to_value(&self) -> Value {
-                Value::String(String::from(self))
+            fn to_value(&self) -> async_graphql::Value {
+                async_graphql::Value::String(String::from(self))
             }
         }
     };
