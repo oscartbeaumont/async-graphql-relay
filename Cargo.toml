@@ -20,3 +20,7 @@ proc-macro = true
 [dependencies]
 syn = "1.0.72"
 quote = "1.0.9"
+
+[dev-dependencies]
+async-graphql = "2.8.5"
+tokio = { version = "0.2.22", features = ["full"] }

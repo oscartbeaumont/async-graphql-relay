@@ -9,14 +9,16 @@ pub struct Tenant {
 }
 
 impl Tenant {
-    pub async fn get(id: String) -> Node {
+    pub async fn get(id: String) -> Option<Node> {
         println!("Getting Tenant: {}", id);
 
-        Tenant {
-            id: ID(id, SchemaNodeTypes::Tenant),
-            name: "My Company".to_string(),
-            description: "Testing123".to_string(),
-        }
-        .into()
+        Some(
+            Tenant {
+                id: ID(id, SchemaNodeTypes::Tenant),
+                name: "My Company".to_string(),
+                description: "Testing123".to_string(),
+            }
+            .into(),
+        )
     }
 }

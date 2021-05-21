@@ -5,7 +5,7 @@ use syn::{parse_macro_input, Data, DeriveInput, Ident};
 extern crate quote;
 extern crate proc_macro;
 
-#[proc_macro_derive(RelayGlobalID, attributes(relay_global_id))]
+#[proc_macro_derive(RelayGlobalID)]
 pub fn derive_relay_global_id(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
     let name = input.ident;
@@ -79,7 +79,7 @@ pub fn derive_relay_node(input: TokenStream) -> TokenStream {
 
                 match node_type {
                     #(
-                        #variant_node_type => Some(<#variants>::get(id.to_string()).await),
+                        #variant_node_type => <#variants>::get(id.to_string()).await,
                     )*
                     _ => None
                 }

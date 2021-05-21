@@ -10,15 +10,17 @@ pub struct User {
 }
 
 impl User {
-    pub async fn get(id: String) -> Node {
+    pub async fn get(id: String) -> Option<Node> {
         println!("Getting User: {}", id);
 
-        User {
-            id: ID(id, SchemaNodeTypes::User),
-            name: "Oscar".to_string(),
-            role: "Testing123".to_string(),
-        }
-        .into()
+        Some(
+            User {
+                id: ID(id, SchemaNodeTypes::User),
+                name: "Oscar".to_string(),
+                role: "Testing123".to_string(),
+            }
+            .into(),
+        )
     }
 }
 
