@@ -1,5 +1,6 @@
 use crate::{Node, SchemaNodeTypes, ID};
 use async_graphql::{ComplexObject, SimpleObject};
+use async_graphql_relay::RelayContext;
 
 #[derive(SimpleObject)]
 #[graphql(complex)]
@@ -10,8 +11,9 @@ pub struct User {
 }
 
 impl User {
-    pub async fn get(id: String) -> Option<Node> {
-        println!("Getting User: {}", id);
+    pub async fn get(ctx: RelayContext, id: String) -> Option<Node> {
+        let ctx_str = ctx.get::<String>().unwrap();
+        println!("Getting User: {} with context {}", id, ctx_str);
 
         Some(
             User {

@@ -1,5 +1,6 @@
 use crate::{Node, SchemaNodeTypes, ID};
 use async_graphql::SimpleObject;
+use async_graphql_relay::RelayContext;
 
 #[derive(SimpleObject)]
 pub struct Tenant {
@@ -9,8 +10,9 @@ pub struct Tenant {
 }
 
 impl Tenant {
-    pub async fn get(id: String) -> Option<Node> {
-        println!("Getting Tenant: {}", id);
+    pub async fn get(ctx: RelayContext, id: String) -> Option<Node> {
+        let ctx_str = ctx.get::<String>().unwrap();
+        println!("Getting Tenant: {} with context {}", id, ctx_str);
 
         Some(
             Tenant {

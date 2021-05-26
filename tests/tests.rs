@@ -1,5 +1,5 @@
 use async_graphql::{value, EmptyMutation, EmptySubscription, Interface, Object, SimpleObject};
-use async_graphql_relay::{RelayGlobalID, RelayNodeEnum};
+use async_graphql_relay::{RelayContext, RelayGlobalID, RelayNodeEnum};
 
 #[derive(RelayGlobalID)]
 pub struct ID(pub String, pub SchemaNodeTypes);
@@ -18,8 +18,11 @@ pub struct User {
 }
 
 impl User {
-    pub async fn get(id: String) -> Option<Node> {
-        if id != "92ba0c2d-4b4e-4e29-91dd-8f96a078c3ff".to_string() {
+    pub async fn get(ctx: RelayContext, id: String) -> Option<Node> {
+        let ctx_str = ctx.get::<String>().unwrap();
+        if id != "92ba0c2d-4b4e-4e29-91dd-8f96a078c3ff".to_string()
+            || *ctx_str != "ThisIsInTheContext".to_string()
+        {
             None?
         }
 
@@ -40,8 +43,11 @@ pub struct Tenant {
 }
 
 impl Tenant {
-    pub async fn get(id: String) -> Option<Node> {
-        if id != "14b4a5db-b8f0-4bf9-881e-37a9e0d0ae3h".to_string() {
+    pub async fn get(ctx: RelayContext, id: String) -> Option<Node> {
+        let ctx_str = ctx.get::<String>().unwrap();
+        if id != "14b4a5db-b8f0-4bf9-881e-37a9e0d0ae3h".to_string()
+            || *ctx_str != "ThisIsInTheContext".to_string()
+        {
             None?
         }
 
@@ -82,7 +88,8 @@ impl QueryRoot {
     }
 
     async fn node(&self, id: String) -> Option<Node> {
-        Node::get(id).await
+        let ctx = RelayContext::new::<String>("ThisIsInTheContext".to_string());
+        Node::get(ctx, id).await
     }
 }
 

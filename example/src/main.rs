@@ -4,7 +4,7 @@ use actix_web::{http::StatusCode, web, App, HttpResponse, HttpServer, Responder}
 use async_graphql::http::{playground_source, GraphQLPlaygroundConfig};
 use async_graphql::{EmptyMutation, EmptySubscription, Interface, Object, Response};
 use async_graphql_actix_web::Request;
-use async_graphql_relay::{RelayGlobalID, RelayNodeEnum};
+use async_graphql_relay::{RelayContext, RelayGlobalID, RelayNodeEnum};
 
 mod tenant;
 mod user;
@@ -50,7 +50,8 @@ impl QueryRoot {
     }
 
     async fn node(&self, id: String) -> Option<Node> {
-        Node::get(id).await
+        let ctx = RelayContext::new::<String>("Hello World".to_string());
+        Node::get(ctx, id).await
     }
 }
 
