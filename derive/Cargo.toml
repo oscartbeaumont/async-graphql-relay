@@ -9,7 +9,6 @@ license = "MIT"
 homepage = "https://github.com/oscartbeaumont/async-graphql-relay"
 documentation = "https://docs.rs/async-graphql-relay"
 repository = "https://github.com/oscartbeaumont/async-graphql-relay"
-readme = "../README.md"
 
 [lib]
 proc-macro = true
