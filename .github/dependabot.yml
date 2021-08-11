@@ -5,7 +5,7 @@ updates:
     schedule:
       interval: "daily"
 
-  - package-ecosystem: "rust:cargo"
+  - package-ecosystem: "cargo"
     directory: "/"
     schedule:
       interval: "daily"
