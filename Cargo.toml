@@ -18,7 +18,7 @@ categories = ["network-programming", "asynchronous"]
 async-graphql-relay-derive = { path = "derive", version = "^0.3" }
 
 [dev-dependencies]
-async-graphql = "2.8.5"
+async-graphql = "3.0.5"
 tokio = { version = "1.10.1", features = ["full"] }
 
 [workspace]
