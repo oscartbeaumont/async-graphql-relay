@@ -5,7 +5,8 @@ authors = ["Oscar Beaumont <oscar@otbeaumont.me>"]
 edition = "2018"
 
 [dependencies]
-async-graphql = "3.0.5"
-actix-web = "3.3.2"
-async-graphql-actix-web = "3.0.5"
+async-graphql = "3.0.17"
+actix-web = "4.0.0-beta.14"
+async-graphql-actix-web = "3.0.17"
 async-graphql-relay = { path = "../" }
+async-trait = "0.1.52"

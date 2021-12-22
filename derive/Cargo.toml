@@ -1,7 +1,7 @@
 [package]
 name = "async-graphql-relay-derive"
 description = "Derive macros for async-graphql-relay crate. Don't use directly!"
-version = "0.3.0"
+version = "0.4.0"
 authors = ["Oscar Beaumont <oscar@otbeaumont.me>"]
 edition = "2018"
 license = "MIT"
@@ -14,5 +14,6 @@ repository = "https://github.com/oscartbeaumont/async-graphql-relay"
 proc-macro = true
 
 [dependencies]
-syn = "1.0.72"
-quote = "1.0.9"
+syn = "1.0.82"
+quote = "1.0.10"
+darling = "0.13.1"

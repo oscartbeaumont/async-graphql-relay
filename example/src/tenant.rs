@@ -1,26 +1,32 @@
-use crate::{Node, SchemaNodeTypes, ID};
-use async_graphql::SimpleObject;
-use async_graphql_relay::RelayContext;
+use async_graphql::{Error, SimpleObject};
+use async_graphql_relay::{RelayContext, RelayNode, RelayNodeID, RelayNodeObject};
+use async_trait::async_trait;
 
-#[derive(SimpleObject)]
+use crate::Node;
+
+#[derive(Debug, SimpleObject, RelayNodeObject)]
+#[relay(node_suffix = "t")]
 pub struct Tenant {
-    pub id: ID,
+    pub id: RelayNodeID<Tenant>,
     pub name: String,
     pub description: String,
 }
 
-impl Tenant {
-    pub async fn get(ctx: RelayContext, id: String) -> Option<Node> {
-        let ctx_str = ctx.get::<String>().unwrap();
-        println!("Getting Tenant: {} with context {}", id, ctx_str);
+#[async_trait]
+impl RelayNode for Tenant {
+    type TNode = Node;
 
-        Some(
+    async fn get(ctx: RelayContext, id: RelayNodeID<Self>) -> Result<Option<Self::TNode>, Error> {
+        let ctx_str = ctx.get::<String>().unwrap();
+        println!("Getting Tenant: {:?} with context {}", id, ctx_str);
+
+        Ok(Some(
             Tenant {
-                id: ID(id, SchemaNodeTypes::Tenant),
+                id: RelayNodeID::new_from_str("92ba0c2d-4b4e-4e29-91dd-8f96a078c3ff").unwrap(),
                 name: "My Company".to_string(),
                 description: "Testing123".to_string(),
             }
             .into(),
-        )
+        ))
     }
 }
