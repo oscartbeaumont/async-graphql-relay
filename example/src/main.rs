@@ -4,11 +4,9 @@ use actix_web::guard;
 use actix_web::web::Data;
 use actix_web::{web, App, HttpResponse, HttpServer, Responder};
 use async_graphql::http::{playground_source, GraphQLPlaygroundConfig};
-use async_graphql::{EmptyMutation, EmptySubscription, Error, Interface, Object, ScalarType};
+use async_graphql::{EmptyMutation, EmptySubscription, Error, Interface, Object};
 use async_graphql_actix_web::{GraphQLRequest, GraphQLResponse};
-use async_graphql_relay::{
-    RelayContext, RelayInterface, RelayNode, RelayNodeID, RelayNodeInterface,
-};
+use async_graphql_relay::{RelayContext, RelayInterface, RelayNodeID, RelayNodeInterface};
 
 mod tenant;
 mod user;

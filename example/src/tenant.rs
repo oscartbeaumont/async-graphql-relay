@@ -7,7 +7,7 @@ use crate::Node;
 #[derive(Debug, SimpleObject, RelayNodeObject)]
 #[relay(node_suffix = "t")]
 pub struct Tenant {
-    pub id: RelayNodeID<Tenant>,
+    pub id: RelayNodeID<Self>,
     pub name: String,
     pub description: String,
 }

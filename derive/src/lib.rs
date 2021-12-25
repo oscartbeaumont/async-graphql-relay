@@ -70,8 +70,8 @@ pub fn derive_relay_interface(input: TokenStream) -> TokenStream {
         impls = data.variants.iter().map(|variant| {
             let variant_ident = &variant.ident;
             quote! {
-                impl std::convert::From<&RelayNodeID<#variant_ident>> for #ident {
-                    fn from(t: &RelayNodeID<#variant_ident>) -> Self {
+                impl std::convert::From<&async_graphql_relay::RelayNodeID<#variant_ident>> for #ident {
+                    fn from(t: &async_graphql_relay::RelayNodeID<#variant_ident>) -> Self {
                         #ident(String::from(t))
                     }
                 }
@@ -82,14 +82,14 @@ pub fn derive_relay_interface(input: TokenStream) -> TokenStream {
             let variant_ident = &variant.ident;
             quote! {
                 <#variant_ident as async_graphql_relay::RelayNodeStruct>::ID_SUFFIX => {
-                    #variant_ident::get(
+                    <#variant_ident as async_graphql_relay::RelayNode>::get(
                         ctx,
                         async_graphql_relay::RelayNodeID::<#variant_ident>::new_from_relay_id(
                             relay_id.to_string(),
                         )?,
                     )
                     .await?
-                    .ok_or_else(|| Error::new("A node with the specified id could not be found!"))
+                    .ok_or_else(|| async_graphql::Error::new("A node with the specified id could not be found!"))
                 }
             }
         });
@@ -118,12 +118,12 @@ pub fn derive_relay_interface(input: TokenStream) -> TokenStream {
         impl async_graphql_relay::RelayNodeInterface for Node {
             async fn fetch_node(ctx: async_graphql_relay::RelayContext, relay_id: String) -> Result<Self, async_graphql::Error> {
                 if relay_id.len() < 32 {
-                    return Err(Error::new("Invalid id provided to node query!"));
+                    return Err(async_graphql::Error::new("Invalid id provided to node query!"));
                 }
                 let (_, suffix) = relay_id.split_at(32);
                 match suffix {
                     #(#node_matchers)*
-                    _ => Err(Error::new("A node with the specified id could not be found!")),
+                    _ => Err(async_graphql::Error::new("A node with the specified id could not be found!")),
                 }
             }
         }
