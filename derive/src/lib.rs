@@ -103,7 +103,7 @@ pub fn derive_relay_interface(input: TokenStream) -> TokenStream {
 
         #(#impls)*
 
-        #[async_graphql::Scalar]
+        #[async_graphql::Scalar(name = "RelayNodeID")]
         impl async_graphql::ScalarType for #ident {
             fn parse(value: async_graphql::Value) -> async_graphql::InputValueResult<Self> {
                 unimplemented!();
