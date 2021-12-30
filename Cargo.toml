@@ -14,14 +14,12 @@ readme = "README.md"
 keywords = ["futures", "async", "graphql"]
 categories = ["network-programming", "asynchronous"]
 
-[features]
-with-sea-orm = ["sea-orm/uuid"]
-
 [dependencies]
-async-graphql = "3.0.17"
+async-graphql = "3.0.19"
 async-graphql-relay-derive = { path = "derive", version = "^0.4" }
 async-trait = "0.1.52"
-sea-orm = { git = "https://github.com/SeaQL/sea-orm.git", branch = "model-with-generics", default-features = false, optional = true } # TODO: We are using branch until changes are released
+sea-orm = { version = "0.4.2", optional = true }
+serde = { version = "1.0.132", optional = true }
 uuid = "0.8.2"
 
 [dev-dependencies]

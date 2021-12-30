@@ -6,7 +6,7 @@
 
 use std::{any::Any, fmt, marker::PhantomData, str::FromStr};
 
-use async_graphql::{Error, InputValueResult, Scalar, ScalarType, Value};
+use async_graphql::{Error, InputValueError, InputValueResult, Scalar, ScalarType, Value};
 
 pub use async_graphql_relay_derive::*;
 use async_trait::async_trait;
@@ -101,8 +101,11 @@ impl<T: RelayNode> fmt::Debug for RelayNodeID<T> {
 
 #[Scalar]
 impl<T: RelayNode + Send + Sync> ScalarType for RelayNodeID<T> {
-    fn parse(_value: Value) -> InputValueResult<Self> {
-        unimplemented!();
+    fn parse(value: Value) -> InputValueResult<Self> {
+        match value {
+            Value::String(s) => Ok(RelayNodeID::<T>::new_from_str(&s)?),
+            _ => Err(InputValueError::expected_type(value)),
+        }
     }
 
     fn to_value(&self) -> Value {
@@ -135,14 +138,14 @@ impl RelayContext {
     }
 }
 
-#[cfg(feature = "with-sea-orm")]
+#[cfg(feature = "sea-orm")]
 impl<T: RelayNode> From<RelayNodeID<T>> for sea_orm::Value {
     fn from(source: RelayNodeID<T>) -> Self {
         sea_orm::Value::Uuid(Some(Box::new(source.to_uuid())))
     }
 }
 
-#[cfg(feature = "with-sea-orm")]
+#[cfg(feature = "sea-orm")]
 impl<T: RelayNode> sea_orm::TryGetable for RelayNodeID<T> {
     fn try_get(
         res: &sea_orm::QueryResult,
@@ -154,14 +157,14 @@ impl<T: RelayNode> sea_orm::TryGetable for RelayNodeID<T> {
     }
 }
 
-#[cfg(feature = "with-sea-orm")]
+#[cfg(feature = "sea-orm")]
 impl<T: RelayNode> sea_orm::sea_query::Nullable for RelayNodeID<T> {
     fn null() -> sea_orm::Value {
         sea_orm::Value::Uuid(None)
     }
 }
 
-#[cfg(feature = "with-sea-orm")]
+#[cfg(feature = "sea-orm")]
 impl<T: RelayNode> sea_orm::sea_query::ValueType for RelayNodeID<T> {
     fn try_from(v: sea_orm::Value) -> Result<Self, sea_orm::sea_query::ValueTypeErr> {
         match v {
@@ -179,13 +182,23 @@ impl<T: RelayNode> sea_orm::sea_query::ValueType for RelayNodeID<T> {
     }
 }
 
-#[cfg(feature = "with-sea-orm")]
+#[cfg(feature = "sea-orm")]
 impl<T: RelayNode> sea_orm::TryFromU64 for RelayNodeID<T> {
     fn try_from_u64(_: u64) -> Result<Self, sea_orm::DbErr> {
         Err(sea_orm::DbErr::Exec(format!(
             "{} cannot be converted from u64",
             std::any::type_name::<T>()
         )))
+    }
+}
+
+#[cfg(feature = "serde")]
+impl<T: RelayNode> serde::Serialize for RelayNodeID<T> {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(&self.to_string())
     }
 }
 
