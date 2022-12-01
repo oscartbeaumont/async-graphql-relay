@@ -7,7 +7,7 @@ edition = "2018"
 [dependencies]
 async-graphql = "3.0.19"
 actix-web = "4.0.0-beta.18"
-async-graphql-actix-web = "3.0.19"
+async-graphql-actix-web = "5.0.2"
 async-graphql-relay = { path = "../" }
 async-trait = "0.1.52"
 
