@@ -15,15 +15,15 @@ keywords = ["futures", "async", "graphql"]
 categories = ["network-programming", "asynchronous"]
 
 [dependencies]
-async-graphql = "3.0.19"
+async-graphql = "3.0.38"
 async-graphql-relay-derive = { path = "derive", version = "^0.4" }
-async-trait = "0.1.52"
+async-trait = "0.1.68"
 sea-orm = { version = "0.4.2", optional = true }
-serde = { version = "1.0.132", optional = true }
+serde = { version = "1.0.163", optional = true }
 uuid = "0.8.2"
 
 [dev-dependencies]
-tokio = { version = "1.15.0", features = ["full"] }
+tokio = { version = "1.28.1", features = ["full"] }
 
 [workspace]
 members = [
