@@ -2,8 +2,8 @@ use crate::tenant::Tenant;
 use crate::user::User;
 use actix_web::guard;
 use actix_web::web::Data;
-use actix_web::{web, App, HttpResponse, HttpServer, Responder};
-use async_graphql::http::{playground_source, GraphQLPlaygroundConfig};
+use actix_web::{App, HttpResponse, HttpServer, Responder, web};
+use async_graphql::http::{GraphQLPlaygroundConfig, playground_source};
 use async_graphql::{EmptyMutation, EmptySubscription, Error, Interface, Object};
 use async_graphql_actix_web::{GraphQLRequest, GraphQLResponse};
 use async_graphql_relay::{RelayContext, RelayInterface, RelayNodeID, RelayNodeInterface};
@@ -14,7 +14,7 @@ mod user;
 pub struct QueryRoot;
 
 #[derive(Interface, RelayInterface)]
-#[graphql(field(name = "id", type = "NodeGlobalID"))] // The 'NodeGlobalID' type comes from the 'RelayInterface' macro.
+#[graphql(field(name = "id", ty = "NodeGlobalID"))] // The 'NodeGlobalID' type comes from the 'RelayInterface' macro.
 pub enum Node {
     User(User),
     Tenant(Tenant),

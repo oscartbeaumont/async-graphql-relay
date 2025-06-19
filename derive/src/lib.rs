@@ -1,6 +1,6 @@
 use darling::FromDeriveInput;
 use proc_macro::TokenStream;
-use syn::{parse_macro_input, Data, DeriveInput};
+use syn::{Data, DeriveInput, parse_macro_input};
 
 #[macro_use]
 extern crate quote;
@@ -52,7 +52,7 @@ pub fn derive_relay_node_object(input: TokenStream) -> TokenStream {
 /// This enum should contain all types that that exist in your GraphQL schema to work as designed in the Relay server specification.
 /// ```
 /// #[derive(Interface, RelayInterface)] // See the 'RelayInterface' derive macro
-/// #[graphql(field(name = "id", type = "NodeGlobalID"))] // The 'RelayInterface' macro generates a type called '{enum_name}GlobalID' which should be used like this to facilitate using the async_graphql_relay::RelayNodeID for globally unique ID's
+/// #[graphql(field(name = "id", ty = "NodeGlobalID"))] // The 'RelayInterface' macro generates a type called '{enum_name}GlobalID' which should be used like this to facilitate using the async_graphql_relay::RelayNodeID for globally unique ID's
 /// pub enum Node {
 ///     User(User),
 ///     Tenant(Tenant),
@@ -114,7 +114,6 @@ pub fn derive_relay_interface(input: TokenStream) -> TokenStream {
             }
         }
 
-        #[async_graphql_relay::_async_trait]
         impl async_graphql_relay::RelayNodeInterface for Node {
             async fn fetch_node(ctx: async_graphql_relay::RelayContext, relay_id: String) -> Result<Self, async_graphql::Error> {
                 if relay_id.len() < 32 {

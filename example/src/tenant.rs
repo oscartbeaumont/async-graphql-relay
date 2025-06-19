@@ -1,6 +1,5 @@
 use async_graphql::{Error, SimpleObject};
 use async_graphql_relay::{RelayContext, RelayNode, RelayNodeID, RelayNodeObject};
-use async_trait::async_trait;
 
 use crate::Node;
 
@@ -12,7 +11,6 @@ pub struct Tenant {
     pub description: String,
 }
 
-#[async_trait]
 impl RelayNode for Tenant {
     type TNode = Node;
 

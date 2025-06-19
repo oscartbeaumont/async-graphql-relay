@@ -41,8 +41,7 @@ Add `async-graphql-relay` to your dependencies:
 ```toml
 [dependencies]
 # ...
-async-graphql = "2.8.5"
-async-graphql-relay= "0.3.0"
+async-graphql-relay= "0.5.0"
 ```
 ## Usage
 
