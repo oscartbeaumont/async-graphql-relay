@@ -1,9 +1,9 @@
 [package]
 name = "async-graphql-relay"
 description = "Relay support for async-graphql"
-version = "0.4.1"
+version = "0.5.0"
 authors = ["Oscar Beaumont <oscar@otbeaumont.me>"]
-edition = "2018"
+edition = "2024"
 license = "MIT"
 
 homepage = "https://github.com/oscartbeaumont/async-graphql-relay"
@@ -16,14 +16,13 @@ categories = ["network-programming", "asynchronous"]
 
 [dependencies]
 async-graphql = "7"
-async-graphql-relay-derive = { path = "derive", version = "^0.4" }
-async-trait = "0.1.68"
-sea-orm = { version = "0.4.2", optional = true }
+async-graphql-relay-derive = { path = "derive", version = "^0.5" }
+sea-orm = { version = "1.1.0", optional = true }
 serde = { version = "1.0.163", optional = true }
-uuid = "0.8.2"
+uuid = "1.17.0"
 
 [dev-dependencies]
-tokio = { version = "1.28.1", features = ["full"] }
+tokio = { version = "1.45.0", features = ["full"] }
 
 [workspace]
 members = [

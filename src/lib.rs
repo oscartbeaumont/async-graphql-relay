@@ -9,22 +9,20 @@ use std::{any::Any, fmt, marker::PhantomData, str::FromStr};
 use async_graphql::{Error, InputValueError, InputValueResult, Scalar, ScalarType, Value};
 
 pub use async_graphql_relay_derive::*;
-use async_trait::async_trait;
 use uuid::Uuid;
-
-#[doc(hidden)]
-pub use async_trait::async_trait as _async_trait;
 
 /// RelayNodeInterface is a trait implemented by the GraphQL interface enum to implement the fetch_node method.
 /// You should refer to the 'RelayInterface' macro which is the recommended way to implement this trait.
-#[async_trait]
 pub trait RelayNodeInterface
 where
     Self: Sized,
 {
     /// fetch_node takes in a RelayContext and a generic relay ID and will return a Node interface with the requested object.
     /// This function is used to implement the 'node' query required by the Relay server specification for easily refetching an entity in the GraphQL schema.
-    async fn fetch_node(ctx: RelayContext, relay_id: String) -> Result<Self, Error>;
+    fn fetch_node(
+        ctx: RelayContext,
+        relay_id: String,
+    ) -> impl std::future::Future<Output = Result<Self, Error>> + Send;
 }
 
 /// RelayNodeStruct is a trait implemented by the GraphQL Object to ensure each Object has a globally unique ID.
@@ -38,14 +36,16 @@ pub trait RelayNodeStruct {
 
 /// RelayNode is a trait implemented on the GraphQL Object to define how it should be fetched.
 /// This is used by the 'node' query so that the object can be refetched.
-#[async_trait]
 pub trait RelayNode: RelayNodeStruct {
     /// TNode is the type of the Node interface. This should point the enum with the 'RelayInterface' macro.
     type TNode: RelayNodeInterface;
 
     /// get is a method defines by the user to refetch an object of a particular type.
     /// The context can be used to share a database connection or other required context to facilitate the refetch.
-    async fn get(ctx: RelayContext, id: RelayNodeID<Self>) -> Result<Option<Self::TNode>, Error>;
+    fn get(
+        ctx: RelayContext,
+        id: RelayNodeID<Self>,
+    ) -> impl std::future::Future<Output = Result<Option<Self::TNode>, Error>> + Send;
 }
 
 /// RelayNodeID is a wrapper around a UUID with the use of the 'RelayNodeStruct' trait to ensure each object has a globally unique ID.
@@ -64,7 +64,7 @@ impl<T: RelayNode> RelayNodeID<T> {
             return Err(Error::new("Invalid id provided to node query!"));
         }
         let (id, _) = relay_id.split_at(32);
-        let uuid = Uuid::parse_str(&id)
+        let uuid = Uuid::parse_str(id)
             .map_err(|_err| Error::new("Invalid id provided to node query!"))?;
         Ok(RelayNodeID(uuid, PhantomData))
     }
@@ -83,13 +83,13 @@ impl<T: RelayNode> RelayNodeID<T> {
 
 impl<T: RelayNode> From<&RelayNodeID<T>> for String {
     fn from(id: &RelayNodeID<T>) -> Self {
-        format!("{}{}", id.0.to_simple().to_string(), T::ID_SUFFIX)
+        format!("{}{}", id.0.simple(), T::ID_SUFFIX)
     }
 }
 
-impl<T: RelayNode> ToString for RelayNodeID<T> {
-    fn to_string(&self) -> String {
-        String::from(self)
+impl<T: RelayNode> std::fmt::Display for RelayNodeID<T> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", String::from(self))
     }
 }
 
@@ -147,12 +147,11 @@ impl<T: RelayNode> From<RelayNodeID<T>> for sea_orm::Value {
 
 #[cfg(feature = "sea-orm")]
 impl<T: RelayNode> sea_orm::TryGetable for RelayNodeID<T> {
-    fn try_get(
+    fn try_get_by<I: sea_orm::ColIdx>(
         res: &sea_orm::QueryResult,
-        pre: &str,
-        col: &str,
+        index: I,
     ) -> Result<Self, sea_orm::TryGetError> {
-        let val: Uuid = res.try_get(pre, col).map_err(sea_orm::TryGetError::DbErr)?;
+        let val: Uuid = res.try_get_by(index).map_err(sea_orm::TryGetError::DbErr)?;
         Ok(RelayNodeID::<T>::new(val))
     }
 }
@@ -180,14 +179,20 @@ impl<T: RelayNode> sea_orm::sea_query::ValueType for RelayNodeID<T> {
     fn column_type() -> sea_orm::sea_query::ColumnType {
         sea_orm::sea_query::ColumnType::Uuid
     }
+
+    fn array_type() -> sea_orm::sea_query::ArrayType {
+        sea_orm::sea_query::ArrayType::Uuid
+    }
 }
 
 #[cfg(feature = "sea-orm")]
 impl<T: RelayNode> sea_orm::TryFromU64 for RelayNodeID<T> {
     fn try_from_u64(_: u64) -> Result<Self, sea_orm::DbErr> {
-        Err(sea_orm::DbErr::Exec(format!(
-            "{} cannot be converted from u64",
-            std::any::type_name::<T>()
+        Err(sea_orm::DbErr::Exec(sea_orm::error::RuntimeErr::Internal(
+            format!(
+                "{} cannot be converted from u64",
+                std::any::type_name::<T>()
+            ),
         )))
     }
 }
