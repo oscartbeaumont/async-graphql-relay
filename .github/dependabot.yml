@@ -1,0 +1,18 @@
+version: 2
+
+# One PR for every dependency bump.
+# 
+# All ecosystems share a single multi-ecosystem group, so upgrades are
+# reviewed together instead of one PR per ecosystem.
+
+multi-ecosystem-groups:
+  async-graphql-relay-deps:
+    schedule:
+      interval: "weekly"
+
+updates:
+  - package-ecosystem: "cargo"
+    directory: "/"
+    multi-ecosystem-group: "async-graphql-relay-deps"
+    patterns: ["*"]
+
