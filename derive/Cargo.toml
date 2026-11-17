@@ -14,6 +14,6 @@ repository = "https://github.com/oscartbeaumont/async-graphql-relay"
 proc-macro = true
 
 [dependencies]
-syn = "1.0.109"
+syn = "3.0.10"
 quote = "1.0.27"
-darling = "0.13.4"
+darling = "0.24.1"
